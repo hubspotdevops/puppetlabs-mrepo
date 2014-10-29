@@ -35,6 +35,7 @@ class mrepo (
   $git_proto    = $mrepo::params::git_proto,
   $src_root     = $mrepo::params::src_root,
   $www_root     = $mrepo::params::www_root,
+  $rhn          = $mrepo::params::rhn,
   $rhn_username = $mrepo::params::rhn_username,
   $rhn_password = $mrepo::params::rhn_password,
   $mailto       = $mrepo::params::mailto,
@@ -42,7 +43,6 @@ class mrepo (
   $https_proxy  = $mrepo::params::https_proxy
 ) inherits mrepo::params{
 
-  include mrepo::rhn
   include mrepo::webservice
   include mrepo::selinux
 
@@ -64,9 +64,16 @@ class mrepo (
     https_proxy  => $https_proxy,
   }
 
+  if $rhn {
+    class { '::mrepo::rhn': }
+
+    Class['::mrepo::package'] ->
+    Class['::mrepo::rhn'] ->
+    Anchor['mrepo::end']
+  }
+
   Class['mrepo::params']     -> Class['mrepo::package']
   Class['mrepo::package']    -> Class['mrepo::webservice']
-  Class['mrepo::package']    -> Class['mrepo::rhn']
   Class['mrepo::package']    -> Class['mrepo::selinux']
   Class['mrepo::webservice'] -> Class['mrepo::selinux']
   Class['mrepo::selinux']    -> Class['mrepo::repos']
@@ -76,7 +83,6 @@ class mrepo (
 #      Class['mrepo::package'],
 #      Class['mrepo::webservice'],
 #      Class['mrepo::selinux'],
-#      Class['mrepo::rhn'],
       Class['mrepo::repos'],
     ],
   }
