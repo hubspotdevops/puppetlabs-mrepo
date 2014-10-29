@@ -74,7 +74,7 @@ class mrepo::params {
   $user         = "apache"
   $group        = "apache"
   $source       = "package"
-  $selinux      = undef
+  $selinux      = false   # requires webservice be enabled too.
   $rhn          = false
   $rhn_username = ''
   $rhn_password = ''
@@ -96,22 +96,5 @@ class mrepo::params {
   }
 
 
-  # Validate selinux usage. If manually set, validate as a bool and use that value.
-  # If undefined and selinux is present and not disabled, use selinux.
-  case $mrepo::params::selinux {
-    undef: {
-      case $::selinux {
-        'enforcing', 'permissive': {
-          $use_selinux = true
-        }
-        'disabled', default: {
-          $use_selinux = false
-        }
-      }
-    }
-    default: {
-      validate_bool($selinux)
-      $use_selinux = $selinux
-    }
-  }
+
 }

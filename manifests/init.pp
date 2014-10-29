@@ -42,10 +42,9 @@ class mrepo (
   $rhn_password   = $mrepo::params::rhn_password,
   $mailto         = $mrepo::params::mailto,
   $http_proxy     = $mrepo::params::http_proxy,
-  $https_proxy    = $mrepo::params::https_proxy
+  $https_proxy    = $mrepo::params::https_proxy,
+  $selinux        = $mrepo::params::selinux,
 ) inherits mrepo::params{
-
-  include mrepo::selinux
 
   anchor { 'mrepo::begin':
     before => Class['mrepo::package'],
@@ -86,17 +85,24 @@ class mrepo (
     Class['mrepo::package'] ->
     Class['mrepo::webservice'] ->
     Anchor['mrepo::end']
+
+    if $selinux == true {
+      class { '::mrepo::selinux':
+        src_root => $src_root,
+        www_root => $www_root
+      }
+      Class['mrepo::webservice'] ->
+      Class['mrepo::selinux'] ->
+      Anchor['mrepo::end']
+    }
   }
 
   Class['mrepo::params']     -> Class['mrepo::package']
-  Class['mrepo::package']    -> Class['mrepo::selinux']
-  Class['mrepo::webservice'] -> Class['mrepo::selinux']
   Class['mrepo::selinux']    -> Class['mrepo::repos']
 
   anchor { 'mrepo::end':
     require => [
 #      Class['mrepo::package'],
-#      Class['mrepo::selinux'],
       Class['mrepo::repos'],
     ],
   }
