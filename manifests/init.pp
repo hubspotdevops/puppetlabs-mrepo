@@ -75,7 +75,7 @@ class mrepo (
 
   # Set $webservice to ahnything else to not set it up.
   if $webservice == present or $webservice == absent {
-    class { '::repo::webservice' :
+    class { '::mrepo::webservice' :
       ensure         => $webservice,
       user           => $user,
       group          => $group,
