@@ -12,7 +12,7 @@
 #   Source for installing mrepo.
 #   values: package, git
 #
-# [*proto*]
+# [*git_proto*]
 #   Protocol to use when installing via git.
 #
 # [*src_root*]
@@ -52,7 +52,7 @@ class mrepo::package (
   $user         = $mrepo::params::user,
   $group        = $mrepo::params::group,
   $source       = $mrepo::params::source,
-  $proto        = $mrepo::params::git_proto,
+  $git_proto    = $mrepo::params::git_proto,
   $src_root     = $mrepo::params::src_root,
   $www_root     = $mrepo::params::www_root,
   $rhn_username = $mrepo::params::rhn_username,
@@ -68,7 +68,7 @@ class mrepo::package (
         ensure    => latest,
         revision  => 'HEAD',
         provider  => "git",
-        source    => "${proto}://github.com/dagwieers/mrepo.git",
+        source    => "${git_proto}://github.com/dagwieers/mrepo.git",
       }
 
       exec { "Install mrepo from source":
