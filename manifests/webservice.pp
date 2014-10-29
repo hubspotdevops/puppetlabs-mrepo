@@ -31,18 +31,18 @@ class mrepo::webservice(
         mode    => '0755',
       }
 
-      apache::vhost { "mrepo":
-        priority        => "10",
-        port            => "80",
+      apache::vhost { 'mrepo':
+        priority        => '10',
+        port            => '80',
         servername      => $www_servername,
         docroot         => $www_root,
         custom_fragment => template("${module_name}/apache.conf.erb"),
       }
     }
     absent: {
-      apache::vhost { "mrepo":
+      apache::vhost { 'mrepo':
         ensure  => $ensure,
-        port    => "80",
+        port    => '80',
         docroot => $www_root,
       }
     }
