@@ -20,70 +20,63 @@
 #
 class mrepo::rhn {
 
-  include mrepo::params
-  $group = $mrepo::params::group
+  package { "pyOpenSSL":
+    ensure  => present,
+  }
 
-  if $mrepo::params::rhn == true {
-
-    package { "pyOpenSSL":
-      ensure  => present,
+  # CentOS does not have redhat network specific configuration files by default
+  if $operatingsystem == 'CentOS' {
+    file {
+      "/etc/sysconfig/rhn":
+        ensure  => directory,
+        owner   => "root",
+        group   => "root",
+        mode    => "0755",
+    }
+    exec { "Generate rhnuuid":
+      command   => 'printf "rhnuuid=%s\n" `/usr/bin/uuidgen` >> /etc/sysconfig/rhn/up2date-uuid',
+      path      => [ "/usr/bin", "/bin" ],
+      user      => "root",
+      group     => 'root',
+      creates   => "/etc/sysconfig/rhn/up2date-uuid",
+      logoutput => on_failure,
+      require   => File['/etc/sysconfig/rhn'],
     }
 
-    # CentOS does not have redhat network specific configuration files by default
-    if $operatingsystem == 'CentOS' {
+    file { "/etc/sysconfig/rhn/up2date-uuid":
+      ensure  => present,
+      replace => false,
+      owner   => "root",
+      group   => 'root',
+      mode    => "0640",
+      require => Exec["Generate rhnuuid"],
+    }
 
-      file {
-        "/etc/sysconfig/rhn":
-          ensure  => directory,
-          owner   => "root",
-          group   => "root",
-          mode    => "0755",
-      }
-      exec { "Generate rhnuuid":
-        command   => 'printf "rhnuuid=%s\n" `/usr/bin/uuidgen` >> /etc/sysconfig/rhn/up2date-uuid',
-        path      => [ "/usr/bin", "/bin" ],
-        user      => "root",
-        group     => $group,
-        creates   => "/etc/sysconfig/rhn/up2date-uuid",
-        logoutput => on_failure,
-        require   => File['/etc/sysconfig/rhn'],
-      }
+    file { "/etc/sysconfig/rhn/sources":
+      ensure  => present,
+      owner   => "root",
+      group   => "root",
+      mode    => "0644",
+      content => "up2date default",
+    }
 
-      file { "/etc/sysconfig/rhn/up2date-uuid":
-        ensure  => present,
-        replace => false,
-        owner   => "root",
-        group   => $group,
-        mode    => "0640",
-        require => Exec["Generate rhnuuid"],
-      }
+    file { "/usr/share/mrepo/rhn/RHNS-CA-CERT":
+      ensure  => present,
+      owner   => "root",
+      group   => "root",
+      mode    => "0644",
+      source  => "puppet:///modules/mrepo/RHNS-CA-CERT",
+    }
 
-      file { "/etc/sysconfig/rhn/sources":
-        ensure  => present,
+    file {
+      "/usr/share/rhn":
+        ensure  => directory,
         owner   => "root",
         group   => "root",
-        mode    => "0644",
-        content => "up2date default",
-      }
-
-      file { "/usr/share/mrepo/rhn/RHNS-CA-CERT":
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => "0644",
-        source  => "puppet:///modules/mrepo/RHNS-CA-CERT",
-      }
-
-      file {
-        "/usr/share/rhn":
-          ensure  => directory,
-          owner   => "root",
-          group   => "root",
-          mode    => "0755";
-        "/usr/share/rhn/RHNS-CA-CERT":
-          ensure  => link,
-          target  => "/usr/share/mrepo/rhn/RHNS-CA-CERT";
-      }
+        mode    => "0755";
+      "/usr/share/rhn/RHNS-CA-CERT":
+        ensure  => link,
+        target  => "/usr/share/mrepo/rhn/RHNS-CA-CERT";
     }
   }
 }
