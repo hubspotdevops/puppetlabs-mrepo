@@ -76,11 +76,11 @@ class mrepo (
   # Set $webservice to ahnything else to not set it up.
   if $webservice == present or $webservice == absent {
     class { '::repo::webservice' :
-        ensure         => $webservice,
-        user           => $user,
-        group          => $group,
-        www_root       => $www_root,
-        www_servername => $www_servername
+      ensure         => $webservice,
+      user           => $user,
+      group          => $group,
+      www_root       => $www_root,
+      www_servername => $www_servername
     }
 
     Class['mrepo::package'] ->
