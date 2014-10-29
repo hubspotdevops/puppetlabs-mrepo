@@ -16,7 +16,7 @@ class mrepo::webservice(
   $ensure     = 'present',
   $user       = $mrepo::params::user,
   $group      = $mrepo::params::group,
-  $docroot    = $mrepo::params::www_root,
+  $www_root   = $mrepo::params::www_root,
   $servername = $mrepo::params::www_servername
 ) inherits mrepo::params {
 
@@ -24,7 +24,7 @@ class mrepo::webservice(
     present: {
       include apache
 
-      file { $docroot:
+      file { $www_root:
         ensure  => directory,
         owner   => $user,
         group   => $group,
@@ -35,7 +35,7 @@ class mrepo::webservice(
         priority        => "10",
         port            => "80",
         servername      => $servername,
-        docroot         => $docroot,
+        docroot         => $www_root,
         custom_fragment => template("${module_name}/apache.conf.erb"),
       }
     }
@@ -43,7 +43,7 @@ class mrepo::webservice(
       apache::vhost { "mrepo":
         ensure  => $ensure,
         port    => "80",
-        docroot => $docroot,
+        docroot => $www_roott,
       }
     }
   }
