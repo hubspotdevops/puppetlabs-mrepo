@@ -18,10 +18,10 @@
 #
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
-class mrepo::selinux {
-  include mrepo::params
+class mrepo::selinux (
   $src_root = $mrepo::params::src_root
   $www_root = $mrepo::params::www_root
+) inherits mrepo::params {
 
   $context = "system_u:object_r:httpd_sys_content_t"
 

@@ -13,14 +13,12 @@
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
 class mrepo::webservice(
-  $ensure = 'present'
-){
-  include mrepo::params
-
-  $user  = $mrepo::params::user
-  $group = $mrepo::params::group
-  $docroot = $mrepo::params::www_root
+  $ensure     = 'present',
+  $user       = $mrepo::params::user,
+  $group      = $mrepo::params::group,
+  $docroot    = $mrepo::params::www_root,
   $servername = $mrepo::params::www_servername
+) inherits mrepo::params {
 
   case $ensure {
     present: {

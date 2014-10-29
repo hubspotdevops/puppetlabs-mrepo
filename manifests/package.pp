@@ -2,7 +2,39 @@
 #
 # == Parameters
 #
-# Optional parameters can be found in the mrepo::params class
+# [*user*]
+#   Username to set owner of config files and directories.
+#
+# [*group*]
+#   Group name to set owner of config files and directories.
+#
+# [*source*]
+#   Source for installing mrepo.
+#   values: package, git
+#
+# [*proto*]
+#   Protocol to use when installing via git.
+#
+# [*src_root*]
+#   Directory to store packages.
+#
+# [*www_root*]
+#   Directory for serving packages from via web server.
+#
+# [*rhn_username*]
+#   RHN username.  Used for mirroring from RHN.
+#
+# [*rhn_password*]
+#   RHN password.  Used for mirroring from RHN.
+#
+# [*mailto*]
+#   Email address for notifications.
+#
+# [*http_proxy*]
+#   HTTP proxy URL
+#
+# [*https_proxy*]
+#   HTTPS proxy URL.
 #
 # == Examples
 #
@@ -16,14 +48,19 @@
 #
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
-class mrepo::package {
-
-  include mrepo::params
-
-  $user   = $mrepo::params::user
-  $group  = $mrepo::params::group
-  $source = $mrepo::params::source
-  $proto  = $mrepo::params::git_proto
+class mrepo::package (
+  $user         = $mrepo::params::user,
+  $group        = $mrepo::params::group,
+  $source       = $mrepo::params::source,
+  $proto        = $mrepo::params::git_proto,
+  $src_root     = $mrepo::params::src_root,
+  $www_root     = $mrepo::params::www_root,
+  $rhn_username = $mrepo::params::rhn_username,
+  $rhn_password = $mrepo::params::rhn_password,
+  $mailto       = $mrepo::params::mailto,
+  $http_proxy   = $mrepo::params::http_proxy,
+  $https_proxy  = $mrepo::params::https_proxy,
+) inherits mrepo::params {
 
   case $source {
     git: {
@@ -50,15 +87,6 @@ class mrepo::package {
     }
   }
 
-  # mrepo.conf template params
-  #
-  $src_root     = $mrepo::params::src_root
-  $www_root     = $mrepo::params::www_root
-  $rhn_username = $mrepo::params::rhn_username
-  $rhn_password = $mrepo::params::rhn_password
-  $mailto       = $mrepo::params::mailto
-  $http_proxy   = $mrepo::params::http_proxy
-  $https_proxy  = $mrepo::params::https_proxy
 
   file { "/etc/mrepo.conf":
     ensure  => present,

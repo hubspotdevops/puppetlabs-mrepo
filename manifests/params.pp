@@ -65,23 +65,25 @@
 #
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
-class mrepo::params (
-  $src_root     = "/var/mrepo",
-  $www_root     = "/var/www/mrepo",
-  $www_servername = "mrepo",
-  $user         = "apache",
-  $group        = "apache",
-  $source       = "package",
-  $selinux      = undef,
-  $rhn          = false,
-  $rhn_username = '',
-  $rhn_password = '',
-  $mailto       = 'UNSET',
-  $git_proto    = 'git',
-  $descriptions = {},
-  $http_proxy   = '',
-  $https_proxy  = '',
-) {
+class mrepo::params {
+
+  $src_root     = "/var/mrepo"
+  $www_root     = "/var/www/mrepo"
+  $www_servername = "mrepo"
+  $user         = "apache"
+  $group        = "apache"
+  $source       = "package"
+  $selinux      = undef
+  $rhn          = false
+  $rhn_username = ''
+  $rhn_password = ''
+  $mailto       = 'UNSET'
+  $git_proto    = 'git'
+  $descriptions = {}
+  $http_proxy   = ''
+  $https_proxy  = ''
+
+
   validate_re($source, "^git$|^package$")
   validate_re($git_proto, "^git$|^https$")
   validate_bool($rhn)
