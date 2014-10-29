@@ -97,14 +97,6 @@ class mrepo (
     }
   }
 
-  Class['mrepo::params']     -> Class['mrepo::package']
-  Class['mrepo::selinux']    -> Class['mrepo::repos']
-
-  anchor { 'mrepo::end':
-    require => [
-#      Class['mrepo::package'],
-      Class['mrepo::repos'],
-    ],
-  }
+  anchor { 'mrepo::end': }
 }
 
