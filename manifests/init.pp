@@ -65,7 +65,7 @@ class mrepo (
     https_proxy  => $https_proxy,
   }
 
-  if $rhn {
+  if $rhn == true {
     class { '::mrepo::rhn': }
 
     Class['::mrepo::package'] ->
