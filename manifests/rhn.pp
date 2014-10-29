@@ -20,9 +20,7 @@
 #
 class mrepo::rhn {
 
-  package { "pyOpenSSL":
-    ensure  => present,
-  }
+  ensure_resource('package', 'pyOpenSSL', { 'ensure' => 'present'})
 
   # CentOS does not have redhat network specific configuration files by default
   if $::operatingsystem == 'CentOS' {
