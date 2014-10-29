@@ -13,11 +13,11 @@
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
 class mrepo::webservice(
-  $ensure     = 'present',
-  $user       = $mrepo::params::user,
-  $group      = $mrepo::params::group,
-  $www_root   = $mrepo::params::www_root,
-  $servername = $mrepo::params::www_servername
+  $ensure         = present,
+  $user           = $mrepo::params::user,
+  $group          = $mrepo::params::group,
+  $www_root       = $mrepo::params::www_root,
+  $www_servername = $mrepo::params::www_servername
 ) inherits mrepo::params {
 
   case $ensure {
@@ -34,7 +34,7 @@ class mrepo::webservice(
       apache::vhost { "mrepo":
         priority        => "10",
         port            => "80",
-        servername      => $servername,
+        servername      => $www_servername,
         docroot         => $www_root,
         custom_fragment => template("${module_name}/apache.conf.erb"),
       }
@@ -43,7 +43,7 @@ class mrepo::webservice(
       apache::vhost { "mrepo":
         ensure  => $ensure,
         port    => "80",
-        docroot => $www_roott,
+        docroot => $www_root,
       }
     }
   }

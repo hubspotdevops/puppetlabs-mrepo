@@ -68,6 +68,7 @@
 class mrepo::params {
 
   $src_root     = "/var/mrepo"
+  $webservice   = present
   $www_root     = "/var/www/mrepo"
   $www_servername = "mrepo"
   $user         = "apache"
