@@ -71,6 +71,6 @@ class mrepo::params {
   $rhn_password     = undef
   $mailto           = 'UNSET'
   $git_proto        = 'git'
-  $http_proxy       = ''
-  $https_proxy      = ''
+  $http_proxy       = undef
+  $https_proxy      = undef
 }
