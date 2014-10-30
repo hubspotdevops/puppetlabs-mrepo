@@ -58,20 +58,20 @@
 #
 class mrepo::params {
 
-  $src_root       = '/var/mrepo'
-  $webservice     = present
-  $www_root       = '/var/www/mrepo'
-  $www_servername = 'mrepo'
-  $user           = 'apache'
-  $group          = 'apache'
-  $source         = 'package'
-  $selinux        = false   # requires webservice be enabled too.
-  $rhn            = false
-  $mailto         = 'UNSET'
-  $git_proto      = 'git'
-  $descriptions   = {}
-  $http_proxy     = ''
-  $https_proxy    = ''
+  $src_root         = '/var/mrepo'
+  $webservice       = present
+  $www_root         = '/var/www/mrepo'
+  $www_servername   = 'mrepo'
+  $www_descriptions = {}
+  $user             = 'apache'
+  $group            = 'apache'
+  $source           = 'package'
+  $selinux          = false   # requires webservice be enabled too.
+  $rhn              = false
+  $mailto           = 'UNSET'
+  $git_proto        = 'git'
+  $http_proxy       = ''
+  $https_proxy      = ''
 
 
   validate_re($source, "^git$|^package$")

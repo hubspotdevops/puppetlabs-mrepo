@@ -14,13 +14,13 @@
 
     #AuthUserFile /var/mrepo/auth/.htpasswd
     #Require user bert dag dries thias
-    
+
     HeaderName HEADER.shtml
     ReadmeName README.shtml
 
-<% scope.lookupvar('mrepo::params::descriptions').keys.sort.each do |key| -%>
-    AddDescription "<%= scope.lookupvar('mrepo::params::descriptions')[key] %>" <%= key %>
-<% end -%>
+<% if @www_descriptions -%><% @www_descriptions.sort_by {|k,v|}.each do |key, value| -%>
+    AddDescription "<% value %>" <% key %>
+<% end -%><% end -%>
 
     AddDescription "CDROM ISO file" .iso
     AddDescription "RPM packages" .rpm

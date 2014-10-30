@@ -29,21 +29,22 @@
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
 class mrepo (
-  $user           = $mrepo::params::user,
-  $group          = $mrepo::params::group,
-  $source         = $mrepo::params::source,
-  $git_proto      = $mrepo::params::git_proto,
-  $src_root       = $mrepo::params::src_root,
-  $webservice     = $mrepo::params::webservice,
-  $www_root       = $mrepo::params::www_root,
-  $www_servername = $mrepo::params::www_servername,
-  $rhn            = $mrepo::params::rhn,
-  $mailto         = $mrepo::params::mailto,
-  $http_proxy     = $mrepo::params::http_proxy,
-  $https_proxy    = $mrepo::params::https_proxy,
-  $selinux        = $mrepo::params::selinux,
-  $rhn_username   = undef,
-  $rhn_password   = undef,
+  $user             = $mrepo::params::user,
+  $group            = $mrepo::params::group,
+  $source           = $mrepo::params::source,
+  $git_proto        = $mrepo::params::git_proto,
+  $src_root         = $mrepo::params::src_root,
+  $webservice       = $mrepo::params::webservice,
+  $www_root         = $mrepo::params::www_root,
+  $www_servername   = $mrepo::params::www_servername,
+  $www_descriptions = $mrepo::params::www_descriptions,
+  $rhn              = $mrepo::params::rhn,
+  $mailto           = $mrepo::params::mailto,
+  $http_proxy       = $mrepo::params::http_proxy,
+  $https_proxy      = $mrepo::params::https_proxy,
+  $selinux          = $mrepo::params::selinux,
+  $rhn_username     = undef,
+  $rhn_password     = undef,
 ) inherits mrepo::params{
 
   anchor { 'mrepo::begin':
@@ -75,11 +76,12 @@ class mrepo (
   # Set $webservice to ahnything else to not set it up.
   if $webservice == present or $webservice == absent {
     class { '::mrepo::webservice' :
-      ensure         => $webservice,
-      user           => $user,
-      group          => $group,
-      www_root       => $www_root,
-      www_servername => $www_servername
+      ensure           => $webservice,
+      user             => $user,
+      group            => $group,
+      www_root         => $www_root,
+      www_servername   => $www_servername,
+      www_descriptions => $www_descriptions
     }
 
     Class['mrepo::package'] ->
