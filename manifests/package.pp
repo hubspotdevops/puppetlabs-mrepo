@@ -64,50 +64,50 @@ class mrepo::package (
 
   case $source {
     git: {
-      vcsrepo { "/usr/src/mrepo":
+      vcsrepo { '/usr/src/mrepo':
         ensure    => latest,
         revision  => 'HEAD',
-        provider  => "git",
+        provider  => 'git',
         source    => "${git_proto}://github.com/dagwieers/mrepo.git",
       }
 
-      exec { "Install mrepo from source":
+      exec { 'Install mrepo from source':
         refreshonly => true,
-        path        => "/usr/bin:/usr/sbin:/sbin:/bin",
-        cwd         => "/usr/src/mrepo",
-        refresh     => "make install",
-        subscribe   => Vcsrepo["/usr/src/mrepo"],
+        path        => '/usr/bin:/usr/sbin:/sbin:/bin',
+        cwd         => '/usr/src/mrepo',
+        refresh     => 'make install',
+        subscribe   => Vcsrepo['/usr/src/mrepo'],
         logoutput => on_failure,
       }
     }
     package: {
-      package { "mrepo":
+      package { 'mrepo':
         ensure  => present,
       }
     }
   }
 
 
-  file { "/etc/mrepo.conf":
+  file { '/etc/mrepo.conf':
     ensure  => present,
     owner   => $user,
     group   => $group,
     mode    => '0640',
-    content => template("mrepo/mrepo.conf.erb"),
+    content => template('mrepo/mrepo.conf.erb'),
   }
 
   file {
-    "/etc/mrepo.conf.d":
+    '/etc/mrepo.conf.d':
       ensure  => directory,
       owner   => $user,
       group   => $group,
       mode    => '0755';
-    "/var/cache/mrepo":
+    '/var/cache/mrepo':
       ensure  => directory,
       owner   => $user,
       group   => $group,
       mode    => '0755';
-    "/var/log/mrepo.log":
+    '/var/log/mrepo.log':
       ensure  => file,
       owner   => $user,
       group   => $group,
