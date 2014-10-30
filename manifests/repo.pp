@@ -117,6 +117,10 @@ define mrepo::repo (
   $typerelease   = undef,
   $mrepo_options = '-qgu',
   $mrepo_logging = '',
+  $user          = undef,
+  $group         = undef,
+  $src_root      = undef,
+  $www_root      = undef
 ) {
   include mrepo
   include mrepo::params
@@ -131,27 +135,46 @@ define mrepo::repo (
   # This manages the inconsistent behavior.
   $real_name = mrepo_munge($name, $arch)
 
-  $www_root_subdir = "${mrepo::params::www_root}/${real_name}"
-  $src_root_subdir = "${mrepo::params::src_root}/${real_name}"
+  if $www_root == undef {
+    $www_root_subdir = "${mrepo::params::www_root}/${real_name}"
+  } else {
+    $www_root_subdir = "${www_root}/${real_name}"
+  }
+
+  if $src_root == undef {
+    $src_root_subdir = "${mrepo::params::src_root}/${real_name}"
+  } else {
+    $src_root_subdir = "${src_root}/${real_name}"
+  }
+
+  # Set user and group.
+  if $user == undef {
+    $real_user = $mrepo::params::user
+  } else {
+    $real_user = $user
+  }
+
+  if $group == undef {
+    $real_group = $mrepo::params::group
+  } else {
+    $real_group = $group
+  }
+
 
   case $ensure {
     present: {
-
-      $user  = $mrepo::params::user
-      $group = $mrepo::params::group
-
       file { "/etc/mrepo.conf.d/${name}.conf":
         ensure  => present,
-        owner   => $user,
-        group   => $group,
+        owner   => $real_user,
+        group   => $real_group,
         content => template('mrepo/repo.conf.erb'),
         require => Class['mrepo::package'],
       }
 
       file { $src_root_subdir:
         ensure  => directory,
-        owner   => $user,
-        group   => $group,
+        owner   => $real_user,
+        group   => $real_group,
         mode    => '0755',
         backup  => false,
         recurse => false,
@@ -160,8 +183,8 @@ define mrepo::repo (
       exec { "Generate mrepo repo ${name}":
         command   => "mrepo -g ${name}",
         path      => [ '/usr/bin', '/bin' ],
-        user      => $user,
-        group     => $group,
+        user      => $real_user,
+        group     => $real_group,
         creates   => $www_root_subdir,
         timeout   => $gen_timeout,
         require   => Class['mrepo::package'],
@@ -174,8 +197,8 @@ define mrepo::repo (
           exec { "Synchronize repo ${name}":
             command   => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
             path      => [ '/usr/bin', '/bin' ],
-            user      => $user,
-            group     => $group,
+            user      => $real_user,
+            group     => $real_group,
             timeout   => $sync_timeout,
             require   => Class['mrepo::package'],
             logoutput => on_failure,
@@ -194,7 +217,7 @@ define mrepo::repo (
               command => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
               hour    => $hour,
               minute  => $minute,
-              user    => $user,
+              user    => $real_user,
               require => Class['mrepo::package'];
             "Weekly synchronize repo ${name}":
               ensure  => absent;
@@ -208,7 +231,7 @@ define mrepo::repo (
               weekday => '0',
               hour    => $hour,
               minute  => $minute,
-              user    => $user,
+              user    => $real_user,
               require => Class['mrepo::package'];
             "Nightly synchronize repo ${name}":
               ensure  => absent;
@@ -229,7 +252,6 @@ define mrepo::repo (
           }
         )
       }
-
     }
     absent: {
       exec { "Unmount any mirrored ISOs for ${name}":
