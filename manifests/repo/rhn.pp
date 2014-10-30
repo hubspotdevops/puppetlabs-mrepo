@@ -27,27 +27,50 @@ define mrepo::repo::rhn (
   $ensure,
   $release,
   $arch,
-  $urls       = {},
-  $metadata   = 'repomd',
-  $update     = 'nightly',
-  $hour       = '0',
-  $iso        = '',
-  $typerelease = $release,
-  $repotitle  = $name
+  $rhn_username,
+  $rhn_password,
+  $urls         = {},
+  $metadata     = 'repomd',
+  $update       = 'nightly',
+  $hour         = '0',
+  $iso          = '',
+  $typerelease  = $release,
+  $repotitle    = $name,
+  $user         = undef,
+  $group        = undef,
+  $http_proxy   = undef,
+  $https_proxy  = undef,
+  $src_root     = undef,
 ) {
   include mrepo::params
 
-  $http_proxy   = $mrepo::params::http_proxy
-  $https_proxy  = $mrepo::params::https_proxy
+  # Set user and group.
+  if $user == undef {
+    $real_user = $mrepo::params::user
+  } else {
+    $real_user = $user
+  }
+
+  if $group == undef {
+    $real_group = $mrepo::params::group
+  } else {
+    $real_group = $group
+  }
+
+  if $src_root == undef {
+    $real_src_root = $mrepo::params::src_root
+  } else {
+    $real_src_root = $src_root
+  }
 
   case $ensure {
     present: {
       exec { "Generate systemid $name - $arch":
-        command   => "gensystemid -u '${mrepo::params::rhn_username}' -p '${mrepo::params::rhn_password}' --release '${typerelease}' --arch '${arch}' '${mrepo::params::src_root}/${name}'",
-        path      => [ "/bin", "/usr/bin" ],
-        user      => $mrepo::params::user,
-        group     => $mrepo::params::group,
-        creates   => "${mrepo::params::src_root}/${name}/systemid",
+        command   => "gensystemid -u '${rhn_username}' -p '${rhn_password}' --release '${typerelease}' --arch '${arch}' '${real_src_root}/${name}'",
+        path      => [ '/bin', '/usr/bin' ],
+        user      => $real_user,
+        group     => $real_group,
+        creates   => "${real_src_root}/${name}/systemid",
         require   => [
           Class['mrepo::package'],
           Class['mrepo::rhn'],
