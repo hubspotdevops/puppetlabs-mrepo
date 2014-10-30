@@ -67,6 +67,8 @@ class mrepo::params {
   $source           = 'package'
   $selinux          = false   # requires webservice be enabled too.
   $rhn              = false
+  $rhn_username     = undef
+  $rhn_password     = undef
   $mailto           = 'UNSET'
   $git_proto        = 'git'
   $http_proxy       = ''

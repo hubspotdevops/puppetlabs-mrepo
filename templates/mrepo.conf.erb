@@ -12,9 +12,9 @@ http_proxy = <%= @http_proxy %>
 https_proxy = <%= @https_proxy %>
 <% end -%>
 
-<% if not @rhn_username.empty? and not @rhn_password.empty? -%>
+<% if @rhn_username and @rhn_password -%>
 rhnlogin = <%= @rhn_username %>:<%= @rhn_password %>
-<% elsif not @rhn_username.empty? -%>
+<% elsif @rhn_username -%>
 rhnlogin = <%= @rhn_username %>
 <% end -%>
 
