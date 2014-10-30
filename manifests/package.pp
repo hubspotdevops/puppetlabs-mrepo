@@ -107,17 +107,24 @@ class mrepo::package (
       owner   => $user,
       group   => $group,
       mode    => '0755';
-    $src_root:
-      ensure  => directory,
-      owner   => $user,
-      group   => $group,
-      mode    => '0755';
     "/var/log/mrepo.log":
       ensure  => file,
       owner   => $user,
       group   => $group,
       mode    => '0640';
   }
+
+  # In case the root is pre-defined by a consumer.
+  ensure_resource(
+    'file',
+    $src_root,
+    {
+      'ensure' => 'directory',
+      'owner'  => $user,
+      'group'  => $group,
+      'mode'   => '0755'
+    }
+  )
 
   # Packages needed to mirror files and generate mirror metadata
   ensure_resource('package', ['lftp', 'createrepo'], { 'ensure' => 'present' })
