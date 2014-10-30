@@ -120,7 +120,5 @@ class mrepo::package (
   }
 
   # Packages needed to mirror files and generate mirror metadata
-  package { ['lftp', 'createrepo']:
-    ensure  => present,
-  }
+  ensure_resource('package', ['lftp', 'createrepo'], { 'ensure' => 'present' })
 }
