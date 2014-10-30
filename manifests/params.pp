@@ -57,7 +57,6 @@
 # Copyright 2011 Puppet Labs, unless otherwise noted
 #
 class mrepo::params {
-
   $src_root         = '/var/mrepo'
   $webservice       = present
   $www_root         = '/var/www/mrepo'
@@ -72,15 +71,4 @@ class mrepo::params {
   $git_proto        = 'git'
   $http_proxy       = ''
   $https_proxy      = ''
-
-
-  validate_re($source, "^git$|^package$")
-  validate_re($git_proto, "^git$|^https$")
-  validate_bool($rhn)
-  validate_hash($descriptions)
-
-  if $rhn {
-    validate_re($rhn_username, ".+")
-    validate_re($rhn_password, ".+")
-  }
 }

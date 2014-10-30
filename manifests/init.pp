@@ -47,6 +47,9 @@ class mrepo (
   $rhn_password     = undef,
 ) inherits mrepo::params{
 
+  validate_bool($rhn)
+  validate_bool($selinux)
+
   anchor { 'mrepo::begin':
     before => Class['mrepo::package'],
   }
@@ -66,6 +69,9 @@ class mrepo (
   }
 
   if $rhn == true {
+    validate_re($rhn_username, ".+")
+    validate_re($rhn_password, ".+")
+
     class { '::mrepo::rhn': }
 
     Class['::mrepo::package'] ->

@@ -62,6 +62,9 @@ class mrepo::package (
   $rhn_password = undef,
 ) inherits mrepo::params {
 
+  validate_re($source, "^git$|^package$")
+  validate_re($git_proto, "^git$|^https$")
+
   case $source {
     git: {
       vcsrepo { '/usr/src/mrepo':

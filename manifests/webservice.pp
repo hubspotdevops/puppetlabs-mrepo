@@ -18,8 +18,10 @@ class mrepo::webservice(
   $group            = $mrepo::params::group,
   $www_root         = $mrepo::params::www_root,
   $www_servername   = $mrepo::params::www_servername,
-  $www_descriptions = {},
+  $www_descriptions = $mrepo::params::www_descriptions,
 ) inherits mrepo::params {
+
+  validate_hash($www_descriptions)
 
   include apache
 
