@@ -38,12 +38,12 @@ class mrepo (
   $www_root       = $mrepo::params::www_root,
   $www_servername = $mrepo::params::www_servername,
   $rhn            = $mrepo::params::rhn,
-  $rhn_username   = $mrepo::params::rhn_username,
-  $rhn_password   = $mrepo::params::rhn_password,
   $mailto         = $mrepo::params::mailto,
   $http_proxy     = $mrepo::params::http_proxy,
   $https_proxy    = $mrepo::params::https_proxy,
   $selinux        = $mrepo::params::selinux,
+  $rhn_username   = undef,
+  $rhn_password   = undef,
 ) inherits mrepo::params{
 
   anchor { 'mrepo::begin':

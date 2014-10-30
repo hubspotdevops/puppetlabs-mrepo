@@ -33,14 +33,7 @@
 # Default: false
 # Values: true, false
 #
-# [*rhn_username*]
-# The Redhat Network username. Must be set if the param rhn is true.
-#
-# [*rhn_password*]
-# The Redhat Network password. Must be set if the param rhn is true.
-#
 # [*mailto*]
-#
 # The email recipient for mrepo updates. Defaults to unset
 #
 # == Examples
@@ -52,8 +45,6 @@
 #     user         => 'www-user',
 #     source       => 'package',
 #     rhn          => true,
-#     rhn_username => 'user',
-#     rhn_password => 'pass',
 #   }
 # }
 #
@@ -76,8 +67,6 @@ class mrepo::params {
   $source         = 'package'
   $selinux        = false   # requires webservice be enabled too.
   $rhn            = false
-  $rhn_username   = ''
-  $rhn_password   = ''
   $mailto         = 'UNSET'
   $git_proto      = 'git'
   $descriptions   = {}
