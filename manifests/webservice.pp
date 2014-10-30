@@ -21,9 +21,10 @@ class mrepo::webservice(
   $www_descriptions = {},
 ) inherits mrepo::params {
 
+  include apache
+
   case $ensure {
     present: {
-      include apache
 
       file { $www_root:
         ensure  => directory,
