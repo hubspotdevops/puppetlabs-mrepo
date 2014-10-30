@@ -159,7 +159,6 @@ define mrepo::repo (
 
       exec { "Generate mrepo repo ${name}":
         command   => "mrepo -g ${name}",
-        cwd       => $src_root,
         path      => [ '/usr/bin', '/bin' ],
         user      => $user,
         group     => $group,
@@ -174,7 +173,6 @@ define mrepo::repo (
         now: {
           exec { "Synchronize repo ${name}":
             command   => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
-            cwd       => $src_root,
             path      => [ '/usr/bin', '/bin' ],
             user      => $user,
             group     => $group,
