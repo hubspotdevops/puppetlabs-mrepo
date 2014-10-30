@@ -18,8 +18,8 @@
     HeaderName HEADER.shtml
     ReadmeName README.shtml
 
-<% if @www_descriptions -%><% @www_descriptions.sort_by {|k,v|}.each do |key, value| -%>
-    AddDescription "<% value %>" <% key %>
+<% if @www_descriptions -%><% @www_descriptions.sort_by {|k,v| k}.each do |key, value| -%>
+    AddDescription "<%= value %>" <%= key %>
 <% end -%><% end -%>
 
     AddDescription "CDROM ISO file" .iso
