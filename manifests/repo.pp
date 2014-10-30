@@ -27,7 +27,7 @@
 # Values: yum,apt,repomd
 #
 # [*update*]
-# The schedule for updating.The 'now' will update the repo on every run of 
+# The schedule for updating.The 'now' will update the repo on every run of
 # puppet. Be warned that this could be a very lengthy process on the first run.
 # Default: nightly
 # Values: now, nightly, weekly, never
@@ -121,10 +121,10 @@ define mrepo::repo (
   include mrepo
   include mrepo::params
 
-  validate_re($ensure, "^present$|^absent$")
-  validate_re($arch, "^i386$|^i586$|^x86_64$|^ppc$|^s390$|^s390x$|^ia64$")
-  validate_re($update, "^now$|^nightly$|^weekly$|^never$")
-  validate_re($type  , "^std$|^ncc$|^rhn$")
+  validate_re($ensure,  "^present$|^absent$")
+  validate_re($arch,    "^i386$|^i586$|^x86_64$|^ppc$|^s390$|^s390x$|^ia64$")
+  validate_re($update,  "^now$|^nightly$|^weekly$|^never$")
+  validate_re($type,    "^std$|^ncc$|^rhn$")
 
   # mrepo tries to be clever, and if the arch is the suffix of the name will
   # fold the two, but if the name isn't x86_64 or i386, no folding occurs.
@@ -140,11 +140,11 @@ define mrepo::repo (
       $user  = $mrepo::params::user
       $group = $mrepo::params::group
 
-      file { "/etc/mrepo.conf.d/$name.conf":
+      file { "/etc/mrepo.conf.d/${name}.conf":
         ensure  => present,
         owner   => $user,
         group   => $group,
-        content => template("mrepo/repo.conf.erb"),
+        content => template('mrepo/repo.conf.erb'),
         require => Class['mrepo::package'],
       }
 
@@ -152,30 +152,30 @@ define mrepo::repo (
         ensure  => directory,
         owner   => $user,
         group   => $group,
-        mode    => "0755",
+        mode    => '0755',
         backup  => false,
         recurse => false,
       }
 
-      exec { "Generate mrepo repo $name":
-        command   => "mrepo -g $name",
+      exec { "Generate mrepo repo ${name}":
+        command   => "mrepo -g ${name}",
         cwd       => $src_root,
-        path      => [ "/usr/bin", "/bin" ],
+        path      => [ '/usr/bin', '/bin' ],
         user      => $user,
         group     => $group,
         creates   => $www_root_subdir,
         timeout   => $gen_timeout,
         require   => Class['mrepo::package'],
-        subscribe => File["/etc/mrepo.conf.d/$name.conf"],
+        subscribe => File["/etc/mrepo.conf.d/${name}.conf"],
         logoutput => on_failure,
       }
 
       case $update {
         now: {
-          exec { "Synchronize repo $name":
-            command   => "/usr/bin/mrepo ${mrepo_options} $name ${mrepo_logging}",
+          exec { "Synchronize repo ${name}":
+            command   => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
             cwd       => $src_root,
-            path      => [ "/usr/bin", "/bin" ],
+            path      => [ '/usr/bin', '/bin' ],
             user      => $user,
             group     => $group,
             timeout   => $sync_timeout,
@@ -183,45 +183,45 @@ define mrepo::repo (
             logoutput => on_failure,
           }
           cron {
-            "Nightly synchronize repo $name":
+            "Nightly synchronize repo ${name}":
               ensure  => absent;
-            "Weekly synchronize repo $name":
+            "Weekly synchronize repo ${name}":
               ensure  => absent;
           }
         }
         nightly: {
           cron {
-            "Nightly synchronize repo $name":
+            "Nightly synchronize repo ${name}":
               ensure  => present,
-              command => "/usr/bin/mrepo ${mrepo_options} $name ${mrepo_logging}",
+              command => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
               hour    => $hour,
               minute  => $minute,
               user    => $user,
               require => Class['mrepo::package'];
-            "Weekly synchronize repo $name":
+            "Weekly synchronize repo ${name}":
               ensure  => absent;
           }
         }
         weekly: {
           cron {
-            "Weekly synchronize repo $name":
+            "Weekly synchronize repo ${name}":
               ensure  => present,
-              command => "/usr/bin/mrepo ${mrepo_options} $name ${mrepo_logging}",
-              weekday => "0",
+              command => "/usr/bin/mrepo ${mrepo_options} ${name} ${mrepo_logging}",
+              weekday => '0',
               hour    => $hour,
               minute  => $minute,
               user    => $user,
               require => Class['mrepo::package'];
-            "Nightly synchronize repo $name":
+            "Nightly synchronize repo ${name}":
               ensure  => absent;
           }
         }
       }
-     
+
       if $type != 'std' {
         #notify { "Type = ${type}": }
         create_resources( "mrepo::repo::${type}",
-          { "$name"      => {
+          { "${name}"      => {
               ensure     => $ensure,
               release    => $release,
               arch       => $arch,
@@ -236,7 +236,7 @@ define mrepo::repo (
     absent: {
       exec { "Unmount any mirrored ISOs for ${name}":
         command   => "umount ${www_root_subdir}/disc*",
-        path      => ["/usr/bin", "/bin", "/usr/sbin", "/sbin"],
+        path      => ['/usr/bin', '/bin', '/usr/sbin', '/sbin'],
         onlyif    => "mount | grep ${www_root_subdir}/disk",
         provider  => shell,
         logoutput => true,
@@ -249,20 +249,20 @@ define mrepo::repo (
           force   => true,
           before  => File[$src_root_subdir],
           require => Exec["Unmount any mirrored ISOs for ${name}"];
-        "${mrepo::params::src_root}/$name":
+        "${mrepo::params::src_root}/${name}":
           ensure  => absent,
           backup  => false,
           recurse => false,
           force   => true;
-        "/etc/mrepo.conf.d/$name":
+        "/etc/mrepo.conf.d/${name}":
           ensure  => absent,
           backup  => false,
           force   => true;
       }
       cron {
-        "Nightly synchronize repo $name":
+        "Nightly synchronize repo ${name}":
           ensure  => absent;
-        "Weekly synchronize repo $name":
+        "Weekly synchronize repo ${name}":
           ensure  => absent;
       }
     }
